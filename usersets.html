@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="setsstyle.css">
-    <title>Title</title>
+    <title>My Flashcard Sets</title>
 </head>
 <body>
 <ul>
@@ -11,5 +11,37 @@
     <li><a href="usersets.html">My Sets</a></li>
     <li><a href="index.html">Log Out</a></li>
 </ul>
+
+<!-- Only show this button at first -->
+<div id="start-screen">
+    <button id="show-set-form" type="button">Add a new set</button>
+</div>
+
+<!-- Add new set form -->
+<div id="set-form-section" class="hidden">
+    <form id="new-set-form">
+        <label>Add a new set</label><br>
+        <label for="set-name">Set Name: </label><br>
+        <input type="text" id="set-name" name="set-name"><br>
+        <input type="submit" value="Submit">
+    </form>
+</div>
+
+<!-- Add flashcards -->
+<div id="card-form-section" class="hidden">
+    <h3 id="current-set-name"></h3>
+    <button id="toggle-add-form">➕ Add Flashcard</button>
+    <form id="add-card-form" class="hidden">
+        <input type="text" id="card-question" placeholder="Question" required />
+        <input type="text" id="card-answer" placeholder="Answer" required />
+        <button type="submit">Add Card</button>
+    </form>
+    <ul id="card-list"></ul>
+</div>
+
+<!-- Optional placeholder for set list -->
+<div id="set-list"></div>
+
+<script src="script.js"></script>
 </body>
 </html>
