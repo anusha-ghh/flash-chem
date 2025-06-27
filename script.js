@@ -28,14 +28,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const setFormSection = document.getElementById("set-form-section");
     const showSetFormBtn = document.getElementById("show-set-form");
 
-    // add a new set event button
+    // add a new set button
     showSetFormBtn.addEventListener("click", () => {
         startScreen.classList.add("hidden");
         setFormSection.classList.remove("hidden");
     });
 
     if (setForm && setListContainer) {
-        // redirect to log in
+        // redirect to log in if not logged in
         if (localStorage.getItem("loggedIn") !== "true") {
             window.location.href = "login.html";
         }
@@ -62,10 +62,9 @@ document.addEventListener("DOMContentLoaded", () => {
             localStorage.setItem("flashcardSets", JSON.stringify(allSets));
             document.getElementById("set-name").value = "";
 
-            // after successfully creating a new set
+            // hide form, show card form
             setFormSection.classList.add("hidden");
             cardFormSection.classList.remove("hidden");
-
 
             renderSetList();
         });
@@ -73,6 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
         renderSetList();
     }
 
+    let currentCardIndex = 0;
 
     // show sets
     function renderSetList() {
@@ -81,11 +81,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         setListContainer.innerHTML = "";
 
-        // empty, no flashcard sets created
+        // empty - no flashcard sets
         if (setNames.length === 0) {
             const emptyMsg = document.createElement("p");
             emptyMsg.textContent = "You haven't created any flashcard sets yet.";
-            emptyMsg.style.color = "gray";
             setListContainer.appendChild(emptyMsg);
             return;
         }
@@ -96,6 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
             box.className = "set-box";
             box.textContent = setName;
 
+            // click to select set
             box.addEventListener("click", () => {
                 selectSet(setName);
             });
@@ -104,7 +104,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-
     const cardFormSection = document.getElementById("card-form-section");
     const currentSetNameDisplay = document.getElementById("current-set-name");
     const cardList = document.getElementById("card-list");
@@ -112,16 +111,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let currentSetName = null;
 
-    // "Add Flashcard" button is clicked
+    // "Add Flashcard" button toggle
     const toggleAddFormBtn = document.getElementById("toggle-add-form");
     toggleAddFormBtn.addEventListener("click", () => {
         addCardForm.classList.toggle("hidden");
     });
 
-
-    // find set
+    // find and show a set
     function selectSet(setName) {
         currentSetName = setName;
+        currentCardIndex = 0;
         currentSetNameDisplay.textContent = `Add cards to "${setName}"`;
         cardFormSection.classList.remove("hidden");
         renderCardList();
@@ -129,17 +128,66 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // show list of cards
     function renderCardList() {
-        // find set
         const allSets = JSON.parse(localStorage.getItem("flashcardSets")) || {};
         const cards = allSets[currentSetName] || [];
+
         cardList.innerHTML = "";
 
-        // show card loop
-        cards.forEach(({ question, answer }, index) => {
-            const li = document.createElement("li");
-            li.textContent = `Q: ${question} — A: ${answer}`;
-            cardList.appendChild(li);
+        if (cards.length === 0) {
+            cardList.textContent = "No cards in this set yet.";
+            return;
+        }
+
+        // Clamp currentCardIndex between 0 and cards.length - 1
+        if (currentCardIndex < 0) currentCardIndex = 0;
+        if (currentCardIndex >= cards.length) currentCardIndex = cards.length - 1;
+
+        const { question, answer } = cards[currentCardIndex];
+
+        // Create a single card element
+        const li = document.createElement("li");
+        li.className = "card-item";
+
+        li.innerHTML = `
+        <div class="card-nav-left">
+            <button class="prev-card">←</button>
+        </div>
+        <div class="card-inner">
+            <div class="card-front">${question}</div>
+            <div class="card-back">${answer}</div>
+        </div>
+        <div class="card-nav-right">
+            <button class="next-card">→</button>
+        </div>
+        <div class="card-index">
+            Card ${currentCardIndex + 1} of ${cards.length}
+        </div>
+    `;
+
+        // Flip card on click
+        li.querySelector(".card-inner").addEventListener("click", () => {
+            li.querySelector(".card-inner").classList.toggle("flipped");
         });
+
+        // Prev button
+        li.querySelector(".prev-card").addEventListener("click", (e) => {
+            e.stopPropagation();
+            if (currentCardIndex > 0) {
+                currentCardIndex--;
+                renderCardList();
+            }
+        });
+
+        // Next button
+        li.querySelector(".next-card").addEventListener("click", (e) => {
+            e.stopPropagation();
+            if (currentCardIndex < cards.length - 1) {
+                currentCardIndex++;
+                renderCardList();
+            }
+        });
+
+        cardList.appendChild(li);
     }
 
     // add a card
@@ -151,7 +199,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const cardAnswer = document.getElementById("card-answer").value.trim();
         if (!cardQuestion || !cardAnswer) return;
 
-        // add flashcard tp set
+        // add to set
         const allSets = JSON.parse(localStorage.getItem("flashcardSets")) || {};
         allSets[currentSetName].push({
             question: cardQuestion,
@@ -159,7 +207,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         localStorage.setItem("flashcardSets", JSON.stringify(allSets));
 
-        // reset
+        // reset and rerender
         document.getElementById("card-question").value = "";
         document.getElementById("card-answer").value = "";
         renderCardList();
