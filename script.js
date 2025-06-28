@@ -196,7 +196,32 @@ document.addEventListener("DOMContentLoaded", () => {
         // edit button
         li.querySelector(".edit-card").addEventListener("click", (e) => {
             e.stopPropagation();
-            //
+
+            // load
+            const cards = JSON.parse(localStorage.getItem("flashcardSets"))[currentSetName];
+            const card = cards[currentCardIndex];
+            document.getElementById("editQuestion").value = card.question;
+            document.getElementById("editAnswer").value = card.answer;
+
+            // pop up window
+            const popup = document.getElementById("editPopup");
+            popup.classList.remove("hidden");
+
+            // "save" clicked
+            document.getElementById("saveEdit").onclick = () => {
+                card.question = document.getElementById("editQuestion").value.trim();
+                card.answer = document.getElementById("editAnswer").value.trim();
+
+                // save to storage
+                localStorage.setItem("flashcardSets", JSON.stringify({ ...allSets, [currentSetName]: cards }));
+                popup.classList.add("hidden");
+                renderCardList();
+            };
+
+            // "cancel" clicked
+            document.getElementById("cancelEdit").onclick = () => {
+                popup.classList.add("hidden");
+            };
         })
 
         // delete button

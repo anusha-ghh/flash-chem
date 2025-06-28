@@ -179,6 +179,7 @@ li {
     float: left;
 }
 
+/** Navbar text */
 li a {
     display: block;
     color: white;
@@ -188,6 +189,7 @@ li a {
     font-family: "Monaco", "Courier New", monospace;
 }
 
+/* Navbar on click */
 li a:hover {
     background-color: #111;
 }
