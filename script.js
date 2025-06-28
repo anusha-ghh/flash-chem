@@ -139,13 +139,13 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        // Clamp currentCardIndex between 0 and cards.length - 1
+        // clamp currentCardIndex between 0 and cards.length - 1
         if (currentCardIndex < 0) currentCardIndex = 0;
         if (currentCardIndex >= cards.length) currentCardIndex = cards.length - 1;
 
         const { question, answer } = cards[currentCardIndex];
 
-        // Create a single card element
+        // create a single card element
         const li = document.createElement("li");
         li.className = "card-item";
 
@@ -170,12 +170,12 @@ document.addEventListener("DOMContentLoaded", () => {
   </div>
 `;
 
-        // Flip card on click
+        // flip card on click
         li.querySelector(".card-inner").addEventListener("click", () => {
             li.querySelector(".card-inner").classList.toggle("flipped");
         });
 
-        // Prev button
+        // previous button
         li.querySelector(".prev-card").addEventListener("click", (e) => {
             e.stopPropagation();
             if (currentCardIndex > 0) {
@@ -184,7 +184,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        // Next button
+        // next button
         li.querySelector(".next-card").addEventListener("click", (e) => {
             e.stopPropagation();
             if (currentCardIndex < cards.length - 1) {
@@ -192,6 +192,29 @@ document.addEventListener("DOMContentLoaded", () => {
                 renderCardList();
             }
         });
+
+        // edit button
+        li.querySelector(".edit-card").addEventListener("click", (e) => {
+            e.stopPropagation();
+            //
+        })
+
+        // delete button
+        li.querySelector(".delete-card").addEventListener("click", (e) => {
+            e.stopPropagation();
+            const proceed = confirm("Are you sure you want to delete this card?");
+            if (proceed) {
+                cards.splice(currentCardIndex, 1);
+                localStorage.setItem("flashcardSets", JSON.stringify(allSets));
+
+                // adjust index
+                if (currentCardIndex >= cards.length) {
+                    currentCardIndex = Math.max(cards.length - 1, 0);
+                }
+
+                renderCardList();
+            }
+        })
 
         cardList.appendChild(li);
     }
