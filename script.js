@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!setName) return;
 
             currentSetName = setName;
-            currentSetNameDisplay.textContent = `Add cards to "${setName}"`;
+            //currentSetNameDisplay.textContent = `Add cards to "${setName}"`;
 
             // go through local storage and check if set alr exists
             const allSets = JSON.parse(localStorage.getItem("flashcardSets")) || {};
@@ -98,6 +98,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // click to select set
             box.addEventListener("click", () => {
                 selectSet(setName);
+                startScreen.classList.add("hidden");
             });
 
             setListContainer.appendChild(box);
@@ -121,7 +122,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function selectSet(setName) {
         currentSetName = setName;
         currentCardIndex = 0;
-        currentSetNameDisplay.textContent = `Add cards to "${setName}"`;
+        //currentSetNameDisplay.textContent = `Add cards to "${setName}"`;
         cardFormSection.classList.remove("hidden");
         renderCardList();
     }
@@ -149,20 +150,25 @@ document.addEventListener("DOMContentLoaded", () => {
         li.className = "card-item";
 
         li.innerHTML = `
-        <div class="card-nav-left">
-            <button class="prev-card">←</button>
-        </div>
-        <div class="card-inner">
-            <div class="card-front">${question}</div>
-            <div class="card-back">${answer}</div>
-        </div>
-        <div class="card-nav-right">
-            <button class="next-card">→</button>
-        </div>
-        <div class="card-index">
-            Card ${currentCardIndex + 1} of ${cards.length}
-        </div>
-    `;
+  <div class="card-layout">
+    <div class="card-row">
+      <div class="card-nav-left">
+        <button class="prev-card">←</button>
+      </div>
+      <div class="card-inner">
+        <div class="card-front">${question}</div>
+        <div class="card-back">${answer}</div>
+      </div>
+      <div class="card-nav-right">
+        <button class="next-card">→</button>
+      </div>
+    </div>
+    <div class="card-buttons">
+      <button class="edit-card">Edit</button>
+      <button class="delete-card">Delete</button>
+    </div>
+  </div>
+`;
 
         // Flip card on click
         li.querySelector(".card-inner").addEventListener("click", () => {
