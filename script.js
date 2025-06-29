@@ -93,13 +93,35 @@ document.addEventListener("DOMContentLoaded", () => {
         setNames.forEach(setName => {
             const box = document.createElement("div");
             box.className = "set-box";
-            box.textContent = setName;
+
+            // inner HTML with delete icon
+            box.innerHTML = `
+      <span class="set-name">${setName}</span>
+      <button class="delete-set">🗑️</button>
+      <button class="rename">EDIT</button>
+    `;
 
             // click to select set
-            box.addEventListener("click", () => {
+            box.querySelector(".set-name").addEventListener("click", () => {
                 selectSet(setName);
                 startScreen.classList.add("hidden");
             });
+
+            // click to delete set
+            box.querySelector(".delete-set").addEventListener("click", (e) => {
+                e.stopPropagation();
+                const proceed = confirm(`Delete the set "${setName}"?`);
+
+                // go ahead
+                if (proceed) {
+                    // delete
+                    const allSets = JSON.parse(localStorage.getItem("flashcardSets")) || {};
+                    delete allSets[setName];
+                    localStorage.setItem("flashcardSets", JSON.stringify(allSets));
+                    renderSetList();
+                }
+            })
+
 
             setListContainer.appendChild(box);
         });

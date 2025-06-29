@@ -1,10 +1,34 @@
-/* "Add a new flashcard" */
+/* "Add a new set" container */
+#start-screen {
+    justify-content: center;
+    align-items: center;
+}
+
+/* "Add a new set" button */
 #show-set-form {
     text-align: center;
     font-family: "Monaco", "Courier New", monospace;
     padding: 20px;
     border-radius: 5px;
     font-size: 15px;
+    display: block;
+    margin: 20px auto;
+}
+
+/** Container of the form to add new set */
+#set-form-section {
+    justify-content: center;
+    align-items: center;
+}
+
+/** Form itself */
+#new-set-form {
+    text-align: center;
+    font-family: "Monaco", "Courier New", monospace;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #f8f8f8;
 }
 
 /* Each flashcard set (the visual clickable TITLE box) */
@@ -27,12 +51,13 @@
 #set-list {
     display: flex;
     flex-direction: column;
-    align-items: center;     /* horizontal center */
+    align-items: center;
     margin: 20px;
 }
 
-/* Individual flashcard */
+/* The individual flashcard */
 .card-inner {
+    font-family: "Monaco", "Courier New", monospace;
     position: relative;
     width: 300px;
     height: 180px;
@@ -56,7 +81,7 @@
 .card-item {
     display: flex;
     align-items: center;
-    justify-content: center; /* center vertically */
+    justify-content: center;
     width: 600px;
     height: 180px;
     margin: 30px auto;
@@ -151,6 +176,7 @@ button:hover, input[type="submit"]:hover {
 }
 
 .card-buttons button {
+    font-family: "Monaco", "Courier New", monospace;
     padding: 8px 14px;
     border: none;
     border-radius: 6px;
