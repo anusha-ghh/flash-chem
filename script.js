@@ -275,11 +275,19 @@ document.addEventListener("DOMContentLoaded", () => {
         const cardAnswer = document.getElementById("card-answer").value.trim();
         if (!cardQuestion || !cardAnswer) return;
 
+        // date
+        const now = new Date().toLocaleDateString("en-US");
+
         // add to set
         const allSets = JSON.parse(localStorage.getItem("flashcardSets")) || {};
         allSets[currentSetName].push({
             question: cardQuestion,
-            answer: cardAnswer
+            answer: cardAnswer,
+            lastReviewed: now,
+            nextReview: now + 1,
+            easeFactor: 0,
+            consecutiveMistakes: 0,
+            timesReviewed: 1
         });
         localStorage.setItem("flashcardSets", JSON.stringify(allSets));
 

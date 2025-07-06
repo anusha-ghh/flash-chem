@@ -43,6 +43,31 @@ document.addEventListener("DOMContentLoaded", () => {
         renderCard();
     }
 
+
+    // Next review date
+    function nextReview(currentCard) {
+        // date
+        const now = new Date();
+
+        // daily
+        if (currentCard.easeFactor === 0) {
+            return now + 1;
+        }
+        else if (currentCard.easeFactor === 1) {
+            return now + 3;
+        }
+        else if (currentCard.easeFactor === 2) {
+            return now + 7;
+        }
+        else if (currentCard.easeFactor === 3) {
+            return now + 14;
+        }
+        else if (currentCard.easeFactor === 4) {
+            return now + 30;
+        }
+        return currentCard;
+    }
+
     // Render one flashcard at a time
     function renderCard() {
         const allSets = JSON.parse(localStorage.getItem("flashcardSets")) || {};
@@ -55,8 +80,29 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
+        // date
+        new Date();
+
         if (currentCardIndex < 0) currentCardIndex = 0;
         if (currentCardIndex >= cards.length) currentCardIndex = cards.length - 1;
+
+        // only show ones due for review
+        while (currentCardIndex < cards.length) {
+            const nextDate = new Date(cards[currentCardIndex].nextReview);
+            const today = new Date();
+
+            // due, stop loop
+            if (nextDate <= today) break;
+
+            // skip to next card
+            currentCardIndex++;
+        }
+
+        // no due cards left
+        if (currentCardIndex >= cards.length) {
+            cardList.textContent = "🎉 All cards reviewed for today!";
+            return;
+        }
 
         const { question, answer } = cards[currentCardIndex];
 
@@ -77,13 +123,20 @@ document.addEventListener("DOMContentLoaded", () => {
                         <button class="next-card">→</button>
                     </div>
                 </div>
+                    <div class="card-buttons">
+      <button class="correct-answer">Correct</button>
+      <button class="wrong-answer">Incorrect</button>
+    </div>
             </div>
         `;
+
+        const current = cards[currentCardIndex];
 
         li.querySelector(".card-inner").addEventListener("click", () => {
             li.querySelector(".card-inner").classList.toggle("flipped");
         });
 
+        // previous button
         li.querySelector(".prev-card").addEventListener("click", (e) => {
             e.stopPropagation();
             if (currentCardIndex > 0) {
@@ -92,6 +145,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
+        // next button
         li.querySelector(".next-card").addEventListener("click", (e) => {
             e.stopPropagation();
             if (currentCardIndex < cards.length - 1) {
@@ -99,6 +153,48 @@ document.addEventListener("DOMContentLoaded", () => {
                 renderCard();
             }
         });
+
+        // correct button
+        li.querySelector(".correct-answer").addEventListener("click", (e) => {
+            e.stopPropagation();
+
+            current.lastReviewed = now;
+            current.timesReviewed++;
+            current.consecutiveMistakes = 0;
+            current.easeFactor += 1;
+            current.nextReview = nextReview(current);
+
+            // next card
+            if (currentCardIndex < cards.length - 1) {
+                currentCardIndex++;
+                renderCard();
+            }
+            localStorage.setItem("flashcardSets", JSON.stringify(allSets));
+        });
+
+        // incorrect button
+        li.querySelector(".wrong-answer").addEventListener("click", (e) => {
+            e.stopPropagation();
+
+            // revert to daily or one previous depending on consecutive mistakes
+            current.lastReviewed = now;
+            current.timesReviewed++;
+            current.consecutiveMistakes++;
+            if (current.consecutiveMistakes === 2) {
+                current.easeFactor = 0;
+            } else {
+                current.easeFactor -= 1;
+            }
+            current.nextReview = nextReview(current);
+
+            // next card
+            if (currentCardIndex < cards.length - 1) {
+                currentCardIndex++;
+                renderCard();
+            }
+            localStorage.setItem("flashcardSets", JSON.stringify(allSets));
+        });
+
 
         cardList.appendChild(li);
     }
