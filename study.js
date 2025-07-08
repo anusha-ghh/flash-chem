@@ -80,9 +80,6 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        // date
-        new Date();
-
         if (currentCardIndex < 0) currentCardIndex = 0;
         if (currentCardIndex >= cards.length) currentCardIndex = cards.length - 1;
 
@@ -158,18 +155,21 @@ document.addEventListener("DOMContentLoaded", () => {
         li.querySelector(".correct-answer").addEventListener("click", (e) => {
             e.stopPropagation();
 
-            current.lastReviewed = now;
-            current.timesReviewed++;
+            current.lastReviewed = new Date().toISOString();
+            current.timesReviewed = (current.timesReviewed || 0) + 1;
             current.consecutiveMistakes = 0;
-            current.easeFactor += 1;
+            current.easeFactor = (current.easeFactor || 0) + 1;
             current.nextReview = nextReview(current);
+
+            // save updated data
+            allSets[currentSetName][currentCardIndex] = current;
+            localStorage.setItem("flashcardSets", JSON.stringify(allSets));
 
             // next card
             if (currentCardIndex < cards.length - 1) {
                 currentCardIndex++;
                 renderCard();
             }
-            localStorage.setItem("flashcardSets", JSON.stringify(allSets));
         });
 
         // incorrect button
@@ -177,27 +177,33 @@ document.addEventListener("DOMContentLoaded", () => {
             e.stopPropagation();
 
             // revert to daily or one previous depending on consecutive mistakes
-            current.lastReviewed = now;
-            current.timesReviewed++;
-            current.consecutiveMistakes++;
+            current.lastReviewed = new Date().toISOString();
+            current.timesReviewed = (current.timesReviewed || 0) + 1;
+            current.consecutiveMistakes = (current.consecutiveMistakes || 0) + 1;
             if (current.consecutiveMistakes === 2) {
                 current.easeFactor = 0;
             } else {
-                current.easeFactor -= 1;
+                current.easeFactor = Math.max((current.easeFactor || 1) - 1, 0);
             }
             current.nextReview = nextReview(current);
+
+            // save updated data
+            allSets[currentSetName][currentCardIndex] = current;
+            localStorage.setItem("flashcardSets", JSON.stringify(allSets));
 
             // next card
             if (currentCardIndex < cards.length - 1) {
                 currentCardIndex++;
                 renderCard();
             }
-            localStorage.setItem("flashcardSets", JSON.stringify(allSets));
         });
 
 
         cardList.appendChild(li);
     }
+
+    // quiz function
+    // pre-exam intervals
 
     renderSetList();
 });

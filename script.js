@@ -275,16 +275,18 @@ document.addEventListener("DOMContentLoaded", () => {
         const cardAnswer = document.getElementById("card-answer").value.trim();
         if (!cardQuestion || !cardAnswer) return;
 
-        // date
-        const now = new Date().toLocaleDateString("en-US");
+        // current date and next review date
+        const now = new Date();
+        const tomorrow = new Date(now);
+        tomorrow.setDate(now.getDate() + 1);
 
         // add to set
         const allSets = JSON.parse(localStorage.getItem("flashcardSets")) || {};
         allSets[currentSetName].push({
             question: cardQuestion,
             answer: cardAnswer,
-            lastReviewed: now,
-            nextReview: now + 1,
+            lastReviewed: now.toISOString(),
+            nextReview: tomorrow.toISOString(),
             easeFactor: 0,
             consecutiveMistakes: 0,
             timesReviewed: 1
