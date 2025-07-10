@@ -121,8 +121,8 @@ button, input[type="submit"] {
     margin-top: 10px;
     border: none;
     border-radius: 8px;
-    background-color: #5c6bc0;
-    color: white;
+    background-color: #A26769;
+    color: #3C2F2F;
     font-weight: bold;
     cursor: pointer;
 }
@@ -144,7 +144,7 @@ button:hover, input[type="submit"]:hover {
     font-size: 28px;
     padding: 10px 15px;
     cursor: pointer;
-    background: #5c6bc0;
+    background: #A26769;
     border-radius: 6px;
     border: none;
     user-select: none;
@@ -180,8 +180,8 @@ button:hover, input[type="submit"]:hover {
     padding: 8px 14px;
     border: none;
     border-radius: 6px;
-    background-color: #5c6bc0;
-    color: white;
+    background-color: #A26769;
+    color: #3C2F2F;
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.2s;
@@ -198,7 +198,7 @@ ul {
     margin: 0;
     padding: 0;
     overflow: hidden;
-    background-color: #333;
+    background-color: #A26769;
 }
 
 li {
@@ -208,7 +208,7 @@ li {
 /** Navbar text */
 li a {
     display: block;
-    color: white;
+    color: antiquewhite;
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
@@ -220,6 +220,9 @@ li a:hover {
     background-color: #111;
 }
 
+body {
+    background-color: #FAF3E0;
+}
 
 .hidden {
     display: none;

@@ -46,26 +46,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Next review date
     function nextReview(currentCard) {
-        // date
         const now = new Date();
 
-        // daily
-        if (currentCard.easeFactor === 0) {
-            return now + 1;
+        let daysToAdd = 1;
+        if (currentCard.easeFactor === 1) {
+            daysToAdd = 3;
+        } else if (currentCard.easeFactor === 2) {
+            daysToAdd = 7;
+        } else if (currentCard.easeFactor === 3) {
+            daysToAdd = 14;
+        } else if (currentCard.easeFactor === 4) {
+            daysToAdd = 30;
         }
-        else if (currentCard.easeFactor === 1) {
-            return now + 3;
-        }
-        else if (currentCard.easeFactor === 2) {
-            return now + 7;
-        }
-        else if (currentCard.easeFactor === 3) {
-            return now + 14;
-        }
-        else if (currentCard.easeFactor === 4) {
-            return now + 30;
-        }
-        return currentCard;
+
+        now.setDate(now.getDate() + daysToAdd);
+        return now.toISOString();
     }
 
     // Render one flashcard at a time
